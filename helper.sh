@@ -1,0 +1,2 @@
+terraform import module.instances.google_compute_instance.tf_instance_1 tf-instance-1
+terraform import module.instances.google_compute_instance.tf_instance_2 tf-instance-2

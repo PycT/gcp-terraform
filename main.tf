@@ -1,22 +1,23 @@
 provider "google" {
-  project_id = var.project_id
   region = var.region
   zone = var.zone
 }
 
 module "instances" {
-  source = "./instances"
+  source = "./modules/instances"
   project_id = var.project_id
   region = var.region
   zone = var.zone
+  vpcName = var.vpcName
 }
 
 module "storage" {
-  source = "./storage"
+  source = "./modules/storage"
   project_id = var.project_id
   region = var.region
   zone = var.zone
   stateBucketName = var.stateBucketName
+  vpcName = var.vpcName
 }
 
 module "vpc" {
@@ -29,19 +30,20 @@ module "vpc" {
     shared_vpc_host = false
 }
 
-resource "google_compute_subnetwork" "subnet_01" {
-    name = "subnet-01"
-    network = var.vpcName
-    ip_cidr_range = "10.10.10.0/24"
-    region = var.region
-}
+#UNCOMMENT AFTER THE VPC IS CREATED
+# resource "google_compute_subnetwork" "subnet_01" {
+#     name = "subnet-01"
+#     network = var.vpcName
+#     ip_cidr_range = "10.10.10.0/24"
+#     region = var.region
+# }
 
-resource "google_compute_subnetwork" "subnet_02" {
-    name = "subnet-02"
-    network = var.vpcName
-    ip_cidr_range = "10.10.20.0/24"
-    region = var.region
-}
+# resource "google_compute_subnetwork" "subnet_02" {
+#     name = "subnet-02"
+#     network = var.vpcName
+#     ip_cidr_range = "10.10.20.0/24"
+#     region = var.region
+# }
 
 module "firewall_rules" {
   source       = "terraform-google-modules/network/google//modules/firewall-rules"
@@ -69,9 +71,10 @@ module "firewall_rules" {
   }]
 }
 
-terraform {
-    backend "gcs" {
-        bucket = module.storage.stateBucketName
-        prefix = "terraform/state"
-    }
-}
+# UNCOMMENT AFTER THE BUCKET IS CREATED
+# terraform {
+#     backend "gcs" {
+#         bucket = "FILLME"
+#         prefix = "terraform/state"
+#     }
+# }
